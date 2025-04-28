@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mev-boost
+description: mev-boost
+home: https://lighthouse.sigmaprime.io/
+icon: https://launchpad.ethereum.org/static/media/lighthouse-circle.e0b82d14.png
+sources:
+  - https://github.com/sigp/lighthouse
+type: application
+version: 0.1.0

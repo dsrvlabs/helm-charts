@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "mev-boost.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "mev-boost.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "mev-boost.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mev-boost.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: mev-boost
+        image: "{{ .Values.image }}"
+        imagePullPolicy: always
+        args:
+        - -{{ .Values.network }}
+        - -addr=0.0.0.0:{{ .Values.port }}
+        - -relay-check
+        - -relays=$(MEVBOOST_RELAYS)
+        - -loglevel={{ .Values.logLevel }}
+        - -json
+        ports:
+        - containerPort: {{ .Values.port }}
+        env:
+        - name: MEVBOOST_RELAYS
+          value: {{ range $index, $relay := .Values.relays }}{{ if $index }},{{ end }}{{ $relay }}{{ end }}
